@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HomeWork7
 {
@@ -11,10 +7,36 @@ namespace HomeWork7
     /// </summary>
     public struct Note
     {
+        #region Поля
+
         /// <summary>
         /// Имя
         /// </summary>
         private string firstName;
+
+        /// <summary>
+        /// Фамилия
+        /// </summary>
+        private string lastName;
+
+        /// <summary>
+        /// Возраст
+        /// </summary>
+        private uint age;
+
+        /// <summary>
+        /// Номер телефона
+        /// </summary>
+        private ulong phoneNumber;
+
+        /// <summary>
+        /// Дата добавления записи
+        /// </summary>
+        private DateTime date;
+
+        #endregion
+
+        #region Свойства
 
         /// <summary>
         /// Имя
@@ -24,17 +46,7 @@ namespace HomeWork7
         /// <summary>
         /// Фамилия
         /// </summary>
-        private string lastName;
-
-        /// <summary>
-        /// Фамилия
-        /// </summary>
         public string LastName { get { return lastName; } }
-
-        /// <summary>
-        /// Возраст
-        /// </summary>
-        private uint age;
 
         /// <summary>
         /// Возраст
@@ -44,22 +56,16 @@ namespace HomeWork7
         /// <summary>
         /// Номер телефона
         /// </summary>
-        private ulong phoneNumber;
-
-        /// <summary>
-        /// Номер телефона
-        /// </summary>
         public ulong PhoneNumber { get { return phoneNumber; } }
 
         /// <summary>
         /// Дата добавления записи
         /// </summary>
-        private DateTime date;
-
-        /// <summary>
-        /// Дата добавления записи
-        /// </summary>
         public DateTime Date { get { return date; } }
+
+        #endregion
+
+        #region Конструкторы
 
         /// <summary>
         /// Создание новой записи
@@ -77,5 +83,20 @@ namespace HomeWork7
             this.phoneNumber = phoneNumber;
             this.date = date;
         }
+
+        #endregion
+
+        #region Методы
+
+        /// <summary>
+        /// Выводит в консоль запись
+        /// </summary>
+        /// <returns></returns>
+        public string Print()
+        {
+            return $"{firstName, 15} {lastName, 15} {age, 15} {phoneNumber, 15} {date.ToShortDateString(), 15}";
+        }
+
+        #endregion
     }
 }
