@@ -14,12 +14,7 @@ namespace HomeWork7
         /// <summary>
         /// Записи в телефоной книжке
         /// </summary>
-        private Note[] notes;
-
-        /// <summary>
-        /// Номер записи
-        /// </summary>
-        private int indexNote;
+        public List<Note> notes;
 
         /// <summary>
         /// Путь к файлу
@@ -33,15 +28,6 @@ namespace HomeWork7
 
         #endregion
 
-        #region Свойства
-
-        /// <summary>
-        /// Кол-во записей
-        /// </summary>
-        public int Count { get { return indexNote; } }
-
-        #endregion
-
         #region Конструкторы
 
         /// <summary>
@@ -51,9 +37,8 @@ namespace HomeWork7
         public NoteBook(string path)
         {
             this.path = path;
-            indexNote = 0;
-            notes = new Note[2];
-            titles = new string[5];
+            notes = new List<Note>();
+            titles = "Имя,Фамилия,Возраст,Номер,Дата".Split(',');
         }
 
         #endregion
@@ -61,26 +46,47 @@ namespace HomeWork7
         #region Методы
 
         /// <summary>
-        /// Увеличивает массив в 2 раза
+        /// Добавляет новую учетную запись
         /// </summary>
-        /// <param name="Flag">Условие выполнения</param>
-        private void Resize(bool Flag)
+        public void Add()
         {
-            if (Flag)
-            {
-                Array.Resize(ref notes, notes.Length * 2);
-            }
-        }
+            string firstName;
+            string lastName;
+            uint age;
+            ulong phoneNum;
+            DateTime date;
 
-        /// <summary>
-        /// Добавляет новую запись в ежедневник
-        /// </summary>
-        /// <param name="newNote">Новая запись</param>
-        public void Add(Note newNote)
-        {
-            Resize(indexNote >= notes.Length);
-            notes[indexNote] = newNote;
-            indexNote++;
+            do
+            {
+                Console.WriteLine("Введите имя:");
+                firstName = Console.ReadLine();
+            } while (string.IsNullOrEmpty(firstName));
+
+            do
+            {
+                Console.WriteLine("Введите фамилию:");
+                lastName = Console.ReadLine();
+            } while (string.IsNullOrEmpty(lastName));
+
+            do
+            {
+                do
+                {
+                    Console.WriteLine("Введите возраст:");
+                } while (!UInt32.TryParse(Console.ReadLine(), out age));
+            } while (age == 0 || age > 110);
+
+            do
+            {
+                Console.WriteLine("Введите номер телефона");
+            } while (!UInt64.TryParse(Console.ReadLine(),out phoneNum));
+
+            do
+            {
+                Console.WriteLine("Введите дату:");
+            } while (!DateTime.TryParse(Console.ReadLine(), out date));
+
+            notes.Add(new Note(firstName,lastName,age,phoneNum,date));
         }
 
         /// <summary>
@@ -90,6 +96,8 @@ namespace HomeWork7
         {
             if (File.Exists(path))
             {
+                notes = new List<Note>();
+
                 using(StreamReader sr = new StreamReader(path))
                 {
                     titles = sr.ReadLine().Split(',');
@@ -104,7 +112,7 @@ namespace HomeWork7
                         ulong phoneNum = UInt64.Parse(temp[3]);
                         DateTime date = Convert.ToDateTime(temp[4]);
 
-                        Add(new Note(firstName, lastName, age, phoneNum, date));
+                        notes.Add(new Note(firstName, lastName, age, phoneNum, date));
                     }
                 }
             }
@@ -115,13 +123,39 @@ namespace HomeWork7
         }
 
         /// <summary>
+        /// Сохраняет записи на диск
+        /// </summary>
+        public void Save()
+        {
+            if (notes.Count > 0)
+            {
+                using (FileStream fs = new FileStream(path,FileMode.OpenOrCreate))
+                {
+                    using (StreamWriter sw = new StreamWriter(fs,Encoding.UTF8))
+                    {
+                        sw.WriteLine($"Имя,Фамилия,Возраст,Номер,Дата");
+
+                        for (int i = 0; i < notes.Count; i++)
+                        {
+                            sw.WriteLine($"{notes[i].FirstName},{notes[i].LastName},{notes[i].Age},{notes[i].PhoneNumber},{notes[i].Date.ToShortDateString()}");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Записей еще нет!");
+            }
+        }
+
+        /// <summary>
         /// Выводит в консоль записи ежедневника
         /// </summary>
         public void PrintToConsole()
         {
             Console.WriteLine($"{titles[0],15} {titles[1],15} {titles[2],15} {titles[3],15} {titles[4],15}");
 
-            for (int i = 0; i < indexNote; i++)
+            for (int i = 0; i < notes.Count; i++)
             {
                 Console.WriteLine(notes[i].Print());
             }
