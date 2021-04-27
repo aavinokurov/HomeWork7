@@ -40,32 +40,73 @@ namespace HomeWork7
                 } while (answer < 1 || answer > 9);
 
                 Console.Clear();
+                bool canLoad;
 
                 switch (answer)
                 {
                     case 1:
-                        noteBook.Add();
+                        noteBook.Add(noteBook.notes.Count);
+                        Console.WriteLine("Запись добавлена!");
                         break;
                     case 2:
-                        Console.WriteLine("Скоро будет!");
+                        noteBook.Remove();
                         break;
                     case 3:
-                        Console.WriteLine("Скоро будет!");
+                        noteBook.CorrectNote();
                         break;
                     case 4:
                         noteBook.PrintToConsole();
                         break;
                     case 5:
-                        Console.WriteLine("Скоро будет!");
+                        string sort;
+
+                        do
+                        {
+                            Console.WriteLine("Сортировать по:\n" +
+                                              "1 - Возрасту\n" +
+                                              "2 - Номеру телефона\n" +
+                                              "3 - Дате");
+                            sort = Console.ReadLine();
+                        } while (sort != "1" && sort != "2" && sort != "3");
+
+                        switch (sort)
+                        {
+                            case "1":
+                                noteBook.SortByAge();
+                                break;
+                            case "2":
+                                noteBook.SortByPhoneNum();
+                                break;
+                            case "3":
+                                noteBook.SortByDate();
+                                break;
+                        }
+
                         break;
                     case 6:
-                        noteBook.Load();
+                        canLoad = noteBook.Load();
+                        Console.WriteLine(canLoad ? "Данные загружены!" : "Файла еще не существует.");
                         break;
                     case 7:
-                        Console.WriteLine("Скоро будет!");
+                        DateTime date1;
+                        DateTime date2;
+
+                        do
+                        {
+                            Console.WriteLine("Введите начальную дату:");
+                        } while (!DateTime.TryParse(Console.ReadLine(), out date1));
+
+                        do
+                        {
+                            Console.WriteLine("Введите начальную конечную:");
+                        } while (!DateTime.TryParse(Console.ReadLine(), out date2));
+
+                        canLoad = noteBook.Load(date1, date2);
+                        Console.WriteLine(canLoad ? "Данные загружены!" : "Данные не загружены!");
                         break;
                     case 8:
                         noteBook.Save();
+                        Console.WriteLine("Данные сохранены.");
                         break;
                     case 9:
                         isRun = false;
